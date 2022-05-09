@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<manifest xmlns="http://tizen.org/ns/packages" api-version="2.3.1" package="org.example.rocket" version="1.0.0">
+    <author>Ricky</author>
+    <profile name="wearable"/>
+    <watch-application ambient-support="true" appid="org.example.rocket" exec="rocket">
+        <label>rocket</label>
+        <icon>BG6.png</icon>
+    </watch-application>
+</manifest>

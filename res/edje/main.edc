@@ -1,0 +1,260 @@
+/*
+ * Copyright (c) 2016 Samsung Electronics Co., Ltd
+ *
+ * Licensed under the Flora License, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://floralicense.org/license/
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "../../inc/view_defines.h"
+
+#define IMAGE_FPATH_BG0 "../res/images/BG0.png"
+#define IMAGE_FPATH_BG1 "../res/images/BG1.png"
+#define IMAGE_FPATH_BG2 "../res/images/BG2.png"
+#define IMAGE_FPATH_BG3 "../res/images/BG3.png"
+#define IMAGE_FPATH_BG4 "../res/images/BG4.png"
+#define IMAGE_FPATH_BG5 "../res/images/BG5.png"
+#define IMAGE_FPATH_BG6 "../res/images/BG6.png"
+
+#define PART_BG "bg"
+#define PART_DISTANCETEXT "distancetext"
+#define ROCKET "rocket"
+
+#define BG_STATE0 "default"
+#define BG_STATE1 "bgstate1"
+#define BG_STATE2 "bgstate2"
+#define BG_STATE3 "bgstate3"
+#define BG_STATE4 "bgstate4"
+#define BG_STATE5 "bgstate5"
+#define BG_STATE6 "bgstate6"
+
+collections {
+	images {
+		image: IMAGE_FPATH_BG0 COMP;
+		image: IMAGE_FPATH_BG1 COMP;
+		image: IMAGE_FPATH_BG2 COMP;
+		image: IMAGE_FPATH_BG3 COMP;
+		image: IMAGE_FPATH_BG4 COMP;
+		image: IMAGE_FPATH_BG5 COMP;
+		image: IMAGE_FPATH_BG6 COMP;
+	}
+
+	group {
+		name: GRP_MAIN; /* "main" */
+		parts {
+			part {
+				name: PART_BG;
+				type: IMAGE;
+				scale: 1;
+				description {
+					state: BG_STATE0 0.0;
+					color: 255 255 255 200;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					image { normal: IMAGE_FPATH_BG0; }
+				}
+				description {
+					state: BG_STATE1 0.0;
+					color: 255 255 255 200;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					image { normal: IMAGE_FPATH_BG1; }
+				}
+				description {
+					state: BG_STATE2 0.0;
+					color: 255 255 255 200;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					image { normal: IMAGE_FPATH_BG2; }
+				}
+				description {
+					state: BG_STATE3 0.0;
+					color: 255 255 255 200;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					image { normal: IMAGE_FPATH_BG3; }
+				}
+				description {
+					state: BG_STATE4 0.0;
+					color: 255 255 255 200;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					image { normal: IMAGE_FPATH_BG4; }
+				}
+				description {
+					state: BG_STATE5 0.0;
+					color: 255 255 255 200;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					image { normal: IMAGE_FPATH_BG5; }
+				}
+				description {
+					state: BG_STATE6 0.0;
+					color: 255 255 255 200;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					image { normal: IMAGE_FPATH_BG6; }
+				}
+			}
+
+			part {
+				name: ROCKET;
+				type: RECT;
+				scale: 1;
+				description { 
+					state: "default" 0.0;
+					color: 255 255 0 255;
+					max: 10 20;
+					fixed: 1 1;
+					align: 0.5 0.5;
+					rel1.offset: 0 200;
+				}
+			}
+			
+			part {
+				name: PART_DISTANCETEXT;
+				type: TEXT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					color: 255 0 255 255;
+					text { 
+						font: "Sans";
+						size: 20;
+						align: 0.75 0.5;
+						text_class: "module_normal";
+						text: "00";
+					}
+				}
+			}
+		}
+
+		script
+		{
+			public totalDistance = 0;
+			public distanceValue = 0;
+			public stageMultiplier = 0;
+			public offset = 200; // Always added to distance to move rocket down 200px
+			public stage = 0;
+
+			public game_reset()
+			{
+				set_text(PART:PART_DISTANCETEXT, "0");
+				set_int(distanceValue, 0);
+				set_int(stageMultiplier, 10);
+				set_int(totalDistance, 0);
+				set_int(offset, 200);
+				set_int(stage, 0);
+				set_state(PART:PART_BG, BG_STATE0, 0.0);
+			}
+
+			public press_screen()
+			{
+				// 2 mil distance is approx end of the game (end of final screen)
+				if((get_int(totalDistance) * 1000) < 2000000)
+				{
+					increase_distance();
+					boost_rocket();
+				}
+				
+			}
+
+			// Increase rocket height
+			public boost_rocket()
+			{
+				custom_state(PART:ROCKET, "default", 0.0);
+				set_state_val(PART:ROCKET, STATE_REL1_OFFSET, 0, get_int(distanceValue) + get_int(offset));
+				set_state(PART:ROCKET, "custom", 0.0);
+			}
+
+			// Increase values/text of rocket height
+			public increase_distance()
+			{
+				// Increase local distance
+				set_int(distanceValue, get_int(distanceValue) - (1 * get_int(stageMultiplier)));
+				// Increase total distance
+				set_int(totalDistance, get_int(totalDistance) + 1 * (11 - get_int(stageMultiplier)));
+
+				new buf[16]
+				snprintf(buf, sizeof(buf), "%d", get_int(totalDistance) * 1000);
+				set_text(PART:PART_DISTANCETEXT, buf);
+
+				if(get_int(distanceValue) < -400)
+				{
+					setNextStage();
+				}
+			}
+
+			public setNextStage()
+			{
+				// Increase stage
+				set_int(stage, get_int(stage) + 1);
+
+				// Update distance
+				set_int(stageMultiplier, get_int(stageMultiplier) - 1)
+				set_int(distanceValue, 0);
+
+				// Set BG
+				if(get_int(stage) == 1)
+				{
+					set_state(PART:PART_BG, BG_STATE1, 0.0);
+				}
+				else if(get_int(stage) == 2)
+				{
+					set_state(PART:PART_BG, BG_STATE2, 0.0);
+				}
+				else if(get_int(stage) == 3)
+				{
+					set_state(PART:PART_BG, BG_STATE3, 0.0);
+				}
+				else if(get_int(stage) == 4)
+				{
+					set_state(PART:PART_BG, BG_STATE4, 0.0);
+				}
+				else if(get_int(stage) == 5)
+				{
+					set_state(PART:PART_BG, BG_STATE5, 0.0);
+				}
+				else if(get_int(stage) == 6)
+				{
+					set_state(PART:PART_BG, BG_STATE6, 0.0);
+				}
+				else
+				{
+					game_reset();
+				}
+
+				
+			}
+
+		}
+
+		programs {
+			program {
+				signal: "load";
+				source: "";
+				script {
+					game_reset();
+				}
+			}
+
+			program {
+				signal: "mouse,clicked,1";
+				source: PART_BG;
+				script: {
+					press_screen(); 
+				}
+			}
+
+		}
+		
+	}
+}
