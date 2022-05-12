@@ -19,6 +19,7 @@
 #define IMAGE_FPATH_HANDS_CENTER "../res/images/hands_center.png"
 #define IMAGE_FPATH_HAND_HOUR "../res/images/hand_hour.png"
 #define IMAGE_FPATH_HAND_MINUTE "../res/images/hand_minute.png"
+#define IMAGE_FPATH_HAND_SECOND "../res/images/hand_second.png"
 
 #define IMAGE_FPATH_BG0 "../res/images/BG0.png"
 #define IMAGE_FPATH_BG1 "../res/images/BG1.png"
@@ -43,6 +44,7 @@
 #define PART_HANDS_CENTER "hands_center"
 #define PART_HAND_HOUR "hand_hour"
 #define PART_HAND_MINUTE "hand_minute"
+#define PART_HAND_SECOND "hand_second"
 
 collections {
 	images {
@@ -57,6 +59,7 @@ collections {
 		image: IMAGE_FPATH_HANDS_CENTER COMP;
 		image: IMAGE_FPATH_HAND_HOUR COMP;
 		image: IMAGE_FPATH_HAND_MINUTE COMP;
+		image: IMAGE_FPATH_HAND_SECOND COMP;
 	}
 
 	group {
@@ -206,6 +209,34 @@ collections {
 			}
 
 			part {
+				name: PART_HAND_SECOND;
+				type: IMAGE;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					image { normal: IMAGE_FPATH_HAND_SECOND; }
+					rel1 {
+						relative: 0.4806 0.1806;
+						to: PART_BG;
+					}
+					rel2 {
+						relative: 0.5194 0.5000;
+						to: PART_BG;
+					}
+					map {
+						on: 1;
+						smooth: 1;
+						rotation {
+							center: PART_BG;
+							x: 0.0;
+							y: 0.0;
+							z: 0.0;
+						}
+					}
+				}
+			}
+
+			part {
 				name: PART_HANDS_CENTER;
 				type: IMAGE;
 				scale: 1;
@@ -235,6 +266,49 @@ collections {
 			public stageMultiplier = 0;
 			public offset = 200; // Always added to distance to move rocket down 200px
 			public stage = 0;
+
+			public message(Msg_Type:type, id, ...) {
+				static ambient_mode = 0;
+				static Float:hh;
+				static Float:mm;
+				static Float:ss;
+				
+				if (type == MSG_INT && id == MSG_ID_AMBIENT_MODE) {
+					ambient_mode = getarg(2);
+ 
+					if (ambient_mode == 0) {
+						custom_state(PART:PART_HAND_SECOND, "default", 0.0);
+						set_state_val(PART:PART_HAND_SECOND, STATE_VISIBLE, 1);
+						set_state(PART:PART_HAND_SECOND, "shown", 0.0);
+					} else {
+						custom_state(PART:PART_HAND_SECOND, "default", 0.0);
+						set_state_val(PART:PART_HAND_SECOND, STATE_VISIBLE, 0);
+						set_state(PART:PART_HAND_SECOND, "hidden", 0.0);
+					}
+				}
+				
+				if (type == MSG_INT_SET && id == MSG_ID_SET_TIME) {
+					hh = getarg(2);
+					mm = getarg(3);
+					ss = getarg(4);
+
+					custom_state(PART:PART_HAND_HOUR, "default", 0.0);
+					set_state_val(PART:PART_HAND_HOUR, STATE_MAP_ROT_Z, hh * 360.0 / 12.0 + mm * 360.0 / 12.0 / 60.0);
+					set_state(PART:PART_HAND_HOUR, "custom", 0.0);
+
+					custom_state(PART:PART_HAND_MINUTE, "default", 0.0);
+					set_state_val(PART:PART_HAND_MINUTE, STATE_MAP_ROT_Z, mm * 360.0 / 60.0);
+					set_state(PART:PART_HAND_MINUTE, "custom", 0.0);
+					
+					if (ambient_mode == 0) {
+						custom_state(PART:PART_HAND_SECOND, "default", 0.0);
+						set_state_val(PART:PART_HAND_SECOND, STATE_MAP_ROT_Z, ss * 360.0 / 60.0);
+						set_state(PART:PART_HAND_SECOND, "custom", 0.0);
+					}
+				}
+				
+			}
+
 
 			public game_reset()
 			{
@@ -326,24 +400,7 @@ collections {
 				
 			}
 			
-			public message(Msg_Type:type, id, ...) {
-				static Float:hh;
-				static Float:mm;
-
-				if (type == MSG_INT_SET && id == MSG_ID_SET_TIME) {
-					hh = getarg(2);
-					mm = getarg(3);
-
-					custom_state(PART:PART_HAND_HOUR, "default", 0.0);
-					set_state_val(PART:PART_HAND_HOUR, STATE_MAP_ROT_Z, hh * 360.0 / 12.0 + mm * 360.0 / 12.0 / 60.0);
-					set_state(PART:PART_HAND_HOUR, "custom", 0.0);
-
-					custom_state(PART:PART_HAND_MINUTE, "default", 0.0);
-					set_state_val(PART:PART_HAND_MINUTE, STATE_MAP_ROT_Z, mm * 360.0 / 60.0);
-					set_state(PART:PART_HAND_MINUTE, "custom", 0.0);
-				}
-			}
-
+			
 		}
 
 		programs {
