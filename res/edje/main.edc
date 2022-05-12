@@ -56,49 +56,49 @@ collections {
 				scale: 1;
 				description {
 					state: BG_STATE0 0.0;
-					color: 255 255 255 200;
+					color: 255 255 255 255;
 					rel1 { relative: 0.0 0.0; }
 					rel2 { relative: 1.0 1.0; }
 					image { normal: IMAGE_FPATH_BG0; }
 				}
 				description {
 					state: BG_STATE1 0.0;
-					color: 255 255 255 200;
+					color: 255 255 255 255;
 					rel1 { relative: 0.0 0.0; }
 					rel2 { relative: 1.0 1.0; }
 					image { normal: IMAGE_FPATH_BG1; }
 				}
 				description {
 					state: BG_STATE2 0.0;
-					color: 255 255 255 200;
+					color: 255 255 255 255;
 					rel1 { relative: 0.0 0.0; }
 					rel2 { relative: 1.0 1.0; }
 					image { normal: IMAGE_FPATH_BG2; }
 				}
 				description {
 					state: BG_STATE3 0.0;
-					color: 255 255 255 200;
+					color: 255 255 255 255;
 					rel1 { relative: 0.0 0.0; }
 					rel2 { relative: 1.0 1.0; }
 					image { normal: IMAGE_FPATH_BG3; }
 				}
 				description {
 					state: BG_STATE4 0.0;
-					color: 255 255 255 200;
+					color: 255 255 255 255;
 					rel1 { relative: 0.0 0.0; }
 					rel2 { relative: 1.0 1.0; }
 					image { normal: IMAGE_FPATH_BG4; }
 				}
 				description {
 					state: BG_STATE5 0.0;
-					color: 255 255 255 200;
+					color: 255 255 255 255;
 					rel1 { relative: 0.0 0.0; }
 					rel2 { relative: 1.0 1.0; }
 					image { normal: IMAGE_FPATH_BG5; }
 				}
 				description {
 					state: BG_STATE6 0.0;
-					color: 255 255 255 200;
+					color: 255 255 255 255;
 					rel1 { relative: 0.0 0.0; }
 					rel2 { relative: 1.0 1.0; }
 					image { normal: IMAGE_FPATH_BG6; }
