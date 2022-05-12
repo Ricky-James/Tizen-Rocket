@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// Modifications made by Ricky James (2022)
+
 #include "../../inc/view_defines.h"
 
 #define IMAGE_FPATH_HANDS_CENTER "../res/images/hands_center.png"
